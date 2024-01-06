@@ -12,6 +12,9 @@ struct Index {
           .fontColor('#36d')
           .onClick(e=>this.message = 'Hello ArkTS!')
 
+        Image($r("app.media.icon"))
+          .width(250)
+          .interpolation(ImageInterpolation.High)
       }
       .width('100%')
     }

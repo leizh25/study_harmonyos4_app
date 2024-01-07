@@ -12,6 +12,51 @@ class Item {
   }
 }
 
+import { Header } from "../components/CommonComponent"
+
+// //全局自定义构建函数
+// @Builder function ItemCard(item) {
+//   Row({ space: 10 }) {
+//     Image(item.image).width(100)
+//     Column({ space: 4 }) {
+//       if (item.discount) {
+//         Text(item.name).fontSize(20).fontWeight(FontWeight.Bold)
+//         Text('原价:$ ' + item.price)
+//           .fontColor('#f36')
+//           .fontSize(14)
+//           .fontColor("#ccc")
+//           .decoration({ type: TextDecorationType.LineThrough })
+//         Text('折扣价:$ ' + item.discount).fontColor('#f36').fontSize(18)
+//         Text('补贴:$ ' + (item.price - item.discount)).fontColor('#f36').fontSize(18)
+//       } else {
+//         Text(item.name).fontSize(20).fontWeight(FontWeight.Bold)
+//         Text('$ ' + item.price).fontColor('#f36').fontSize(18)
+//       }
+//     }
+//     .height('100%')
+//     .alignItems(HorizontalAlign.Start)
+//   }
+//   .width("100%")
+//   .backgroundColor("#fff")
+//   .borderRadius(20)
+//   .height(120)
+//   .padding(10)
+// }
+
+// 全局自定义公共样式
+// @Styles function fillScreen() {
+//   .width('100%')
+//   .height('100%')
+//   .backgroundColor('#efefef')
+//   .padding(20)
+// }
+
+//继承模式,只能写在全局
+@Extend(Text) function priceText() {
+  .fontColor('#f36').fontSize(18)
+}
+
+
 @Entry
 @Component
 struct ItemPage {
@@ -27,43 +72,13 @@ struct ItemPage {
 
   build() {
     Column({ space: 10 }) {
-      Row() {
-        Text("商品列表")
-          .fontSize(30)
-          .fontWeight(FontWeight.Bold)
-      }
-      .width('100%')
-      .height(30)
-      .margin({ bottom: 20 })
+      // 标题部分
+      Header({ title: '商品列表' }).margin({ bottom: 20 })
 
       List({ space: 8 }) {
         ForEach(this.items, (item: Item) => {
           ListItem() {
-            Row({ space: 10 }) {
-              Image(item.image).width(100)
-              Column({ space: 4 }) {
-                if (item.discount) {
-                  Text(item.name).fontSize(20).fontWeight(FontWeight.Bold)
-                  Text('原价:$ ' + item.price)
-                    .fontColor('#f36')
-                    .fontSize(14)
-                    .fontColor("#ccc")
-                    .decoration({ type: TextDecorationType.LineThrough })
-                  Text('折扣价:$ ' + item.discount).fontColor('#f36').fontSize(18)
-                  Text('补贴:$ ' + (item.price - item.discount)).fontColor('#f36').fontSize(18)
-                } else {
-                  Text(item.name).fontSize(20).fontWeight(FontWeight.Bold)
-                  Text('$ ' + item.price).fontColor('#f36').fontSize(18)
-                }
-              }
-              .height('100%')
-              .alignItems(HorizontalAlign.Start)
-            }
-            .width("100%")
-            .backgroundColor("#fff")
-            .borderRadius(20)
-            .height(120)
-            .padding(10)
+            this.ItemCard(item)
           }
         })
       }
@@ -71,6 +86,42 @@ struct ItemPage {
       .layoutWeight(1)
 
     }
+    .fillScreen()
+  }
+
+
+  //局部自定义构建函数
+  @Builder ItemCard(item) {
+    Row({ space: 10 }) {
+      Image(item.image).width(100)
+      Column({ space: 4 }) {
+        if (item.discount) {
+          Text(item.name).fontSize(20).fontWeight(FontWeight.Bold)
+          Text('原价:$ ' + item.price)
+            .fontColor('#f36')
+            .fontSize(14)
+            .fontColor("#ccc")
+            .decoration({ type: TextDecorationType.LineThrough })
+          Text('折扣价:$ ' + item.discount).priceText()
+          Text('补贴:$ ' + (item.price - item.discount)).priceText()
+        } else {
+          Text(item.name).fontSize(20).fontWeight(FontWeight.Bold)
+          Text('$ ' + item.price).priceText()
+        }
+      }
+      .height('100%')
+      .alignItems(HorizontalAlign.Start)
+    }
+    .width("100%")
+    .backgroundColor("#fff")
+    .borderRadius(20)
+    .height(120)
+    .padding(10)
+  }
+
+
+  // 局部自定义公共样式
+  @Styles fillScreen() {
     .width('100%')
     .height('100%')
     .backgroundColor('#efefef')

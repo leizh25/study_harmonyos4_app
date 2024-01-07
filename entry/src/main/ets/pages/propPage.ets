@@ -20,22 +20,24 @@ class Task {
   .fontColor('#b1b2b1')
 }
 
+class StatInfo {
+  totalTask: number = 0
+  finishTask: number = 0
+}
 
 @Entry
 @Component
 struct PropPage {
-  //总任务数量
-  @State totalTask: number = 0
-  //已完成任务数量
-  @State finishTask: number = 0
+  //统计信息
+  @State stat: StatInfo = new StatInfo()
 
   build() {
 
     Column({ space: 10 }) {
       //   1.任务进度卡片
-      TaskStatistics({ finishTask: this.finishTask, totalTask: this.totalTask })
+      TaskStatistics({ finishTask: this.stat.finishTask, totalTask: this.stat.totalTask })
       // 2.任务列表
-      TaskList({ finishTask: $finishTask, totalTask: $totalTask })
+      TaskList({ stat: $stat })
 
     }
     .width('100%').height('100%').backgroundColor('#f1f2f3')
@@ -71,14 +73,12 @@ struct TaskList {
   //任务数组
   @State tasks: Task[] = []
   //总任务数量
-  @Link totalTask: number
-  //已完成任务数量
-  @Link finishTask: number
+  @Link stat: StatInfo
 
   handleTaskChange() {
-    this.totalTask = this.tasks.length
+    this.stat.totalTask = this.tasks.length
     //更新已完成任务数量
-    this.finishTask = this.tasks.filter(item => item.finished).length
+    this.stat.finishTask = this.tasks.filter(item => item.finished).length
   }
 
   build() {

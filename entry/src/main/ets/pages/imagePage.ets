@@ -1,7 +1,7 @@
 @Entry
 @Component
 struct Index {
-  @State imageWidth: number = 30
+  @State imageWidth: number = 150
 
   build() {
     Row() {
@@ -29,6 +29,12 @@ struct Index {
           .fontSize(20)
           .onClick(e => (this.imageWidth < 300) && (this.imageWidth += 10))
 
+        Slider({min:100,max:300,value:this.imageWidth,step:10})
+          .width('90%')
+          .blockColor('#36d')
+          .trackThickness(7)
+          .showTips(true)
+          .onChange(value => this.imageWidth = value)
       }
       .width('100%')
     }

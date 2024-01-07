@@ -29,15 +29,15 @@ class StatInfo {
 @Component
 struct PropPage {
   //统计信息
-  @State stat: StatInfo = new StatInfo()
+  @Provide stat: StatInfo = new StatInfo()
 
   build() {
 
     Column({ space: 10 }) {
       //   1.任务进度卡片
-      TaskStatistics({ finishTask: this.stat.finishTask, totalTask: this.stat.totalTask })
+      TaskStatistics()
       // 2.任务列表
-      TaskList({ stat: $stat })
+      TaskList()
 
     }
     .width('100%').height('100%').backgroundColor('#f1f2f3')
@@ -46,21 +46,20 @@ struct PropPage {
 
 @Component
 struct TaskStatistics {
-  @Prop finishTask: number
-  @Prop totalTask: number
+  @Consume stat: StatInfo
 
   build() {
     Row() {
       Text('任务进度').fontSize(30).fontWeight(FontWeight.Bold)
       Stack() {
         Progress({
-          value: this.finishTask,
-          total: this.totalTask,
+          value: this.stat.finishTask,
+          total: this.stat.totalTask,
           type: ProgressType.Ring
         }).width(100)
         Row() {
-          Text(this.finishTask.toString()).fontSize(20).fontColor('#36d')
-          Text(' / ' + this.totalTask.toString()).fontSize(20)
+          Text(this.stat.finishTask.toString()).fontSize(20).fontColor('#36d')
+          Text(' / ' + this.stat.totalTask.toString()).fontSize(20)
         }
       }
     }.card().margin({ top: 20, bottom: 10 }).justifyContent(FlexAlign.SpaceEvenly)
@@ -73,7 +72,7 @@ struct TaskList {
   //任务数组
   @State tasks: Task[] = []
   //总任务数量
-  @Link stat: StatInfo
+  @Consume stat: StatInfo
 
   handleTaskChange() {
     this.stat.totalTask = this.tasks.length

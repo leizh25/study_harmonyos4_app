@@ -28,8 +28,52 @@ struct PropPage {
   @State totalTask: number = 0
   //已完成任务数量
   @State finishTask: number = 0
+
+  build() {
+
+    Column({ space: 10 }) {
+      //   1.任务进度卡片
+      TaskStatistics({ finishTask: this.finishTask, totalTask: this.totalTask })
+      // 2.任务列表
+      TaskList({ finishTask: $finishTask, totalTask: $totalTask })
+
+    }
+    .width('100%').height('100%').backgroundColor('#f1f2f3')
+  }
+}
+
+@Component
+struct TaskStatistics {
+  @Prop finishTask: number
+  @Prop totalTask: number
+
+  build() {
+    Row() {
+      Text('任务进度').fontSize(30).fontWeight(FontWeight.Bold)
+      Stack() {
+        Progress({
+          value: this.finishTask,
+          total: this.totalTask,
+          type: ProgressType.Ring
+        }).width(100)
+        Row() {
+          Text(this.finishTask.toString()).fontSize(20).fontColor('#36d')
+          Text(' / ' + this.totalTask.toString()).fontSize(20)
+        }
+      }
+    }.card().margin({ top: 20, bottom: 10 }).justifyContent(FlexAlign.SpaceEvenly)
+  }
+}
+
+
+@Component
+struct TaskList {
   //任务数组
   @State tasks: Task[] = []
+  //总任务数量
+  @Link totalTask: number
+  //已完成任务数量
+  @Link finishTask: number
 
   handleTaskChange() {
     this.totalTask = this.tasks.length
@@ -38,24 +82,8 @@ struct PropPage {
   }
 
   build() {
+    Column() {
 
-    Column({ space: 10 }) {
-      //   1.任务进度卡片
-      Row() {
-        Text('任务进度').fontSize(30).fontWeight(FontWeight.Bold)
-        Stack() {
-
-          Progress({
-            value: this.finishTask,
-            total: this.totalTask,
-            type: ProgressType.Ring
-          }).width(100)
-          Row() {
-            Text(this.finishTask.toString()).fontSize(20).fontColor('#36d')
-            Text(' / ' + this.totalTask.toString()).fontSize(20)
-          }
-        }
-      }.card().margin({ top: 20, bottom: 10 }).justifyContent(FlexAlign.SpaceEvenly)
       //   2.新增任务按钮
       Button('新增任务').width(200).onClick(e => {
         //新增任务数据
@@ -64,7 +92,6 @@ struct PropPage {
         this.handleTaskChange()
       })
       //   3.任务列表
-
       List({ space: 10 }) {
 
         ForEach(this.tasks, (item: Task, index: number) => {
@@ -81,9 +108,8 @@ struct PropPage {
           }.swipeAction({ end: this.DeleteButton(index) })
         })
       }.width('100%').alignListItem(ListItemAlign.Center).layoutWeight(1)
-
     }
-    .width('100%').height('100%').backgroundColor('#f1f2f3')
+
   }
 
   @Builder DeleteButton(index: number) {

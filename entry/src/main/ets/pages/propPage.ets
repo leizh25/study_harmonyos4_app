@@ -1,4 +1,5 @@
 // 任务类
+import { Header } from '../components/CommonComponent'
 @Observed
 class Task {
   static id: number = 1
@@ -35,6 +36,7 @@ struct PropPage {
   build() {
 
     Column({ space: 10 }) {
+      Header({title: '任务管理'})
       //   1.任务进度卡片
       TaskStatistics()
       // 2.任务列表

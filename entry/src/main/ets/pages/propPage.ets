@@ -1,4 +1,5 @@
 // 任务类
+@Observed
 class Task {
   static id: number = 1
   //任务名称
@@ -95,15 +96,7 @@ struct TaskList {
 
         ForEach(this.tasks, (item: Task, index: number) => {
           ListItem() {
-            Row() {
-              Text(item.name).fontSize(20)
-              Checkbox().select(item.finished).onChange(e => {
-                //更新当前任务状态
-                item.finished = e
-                //更新已完成任务数量
-                this.handleTaskChange()
-              })
-            }.card().justifyContent(FlexAlign.SpaceBetween)
+            TaskItem({ item, onTaskChange: this.handleTaskChange.bind(this) })
           }.swipeAction({ end: this.DeleteButton(index) })
         })
       }.width('100%').alignListItem(ListItemAlign.Center).layoutWeight(1)
@@ -124,5 +117,27 @@ struct TaskList {
       this.tasks.splice(index, 1)
       this.handleTaskChange()
     })
+  }
+}
+
+@Component
+struct TaskItem {
+  @ObjectLink item: Task
+  onTaskChange: () => void
+
+  build() {
+    Row() {
+      if (this.item.finished) {
+        Text(this.item.name).fontSize(20).finishedTask()
+      } else {
+        Text(this.item.name).fontSize(20)
+      }
+      Checkbox().select(this.item.finished).onChange(e => {
+        //更新当前任务状态
+        this.item.finished = e
+        //更新已完成任务数量
+        this.onTaskChange()
+      })
+    }.card().justifyContent(FlexAlign.SpaceBetween)
   }
 }

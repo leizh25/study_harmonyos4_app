@@ -45,30 +45,37 @@ struct AnimationPage {
             .rotate({ angle: this.angle, centerX: '50%', centerY: '50%' })
             .width(40)
             .height(40)
-            .animation({ duration: 500 })
 
         }
         // 操作按钮
         Row() {
           Button('←').backgroundColor('#20101010').onClick(e => {
-            this.fishX -= 20
-            this.src = $r('app.media.fish_rev')
+            animateTo({ duration: 500 }, () => {
+              this.fishX -= 20
+              this.src = $r('app.media.fish_rev')
+            })
           })
 
           Column({ space: 40 }) {
             Button('↑').backgroundColor('#20101010').onClick(() => {
-              this.fishY -= 20
+              animateTo({ duration: 500 }, () => {
+                this.fishY -= 20
+              })
             })
 
             Button('↓').backgroundColor('#20101010').onClick(() => {
-              this.fishY += 20
+              animateTo({ duration: 500 }, () => {
+                this.fishY += 20
+              })
             })
 
           }
 
           Button('→').backgroundColor('#20101010').onClick(() => {
-            this.fishX += 20
-            this.src = $r('app.media.fish')
+            animateTo({ duration: 500 }, () => {
+              this.fishX += 20
+              this.src = $r('app.media.fish')
+            })
 
           })
 
